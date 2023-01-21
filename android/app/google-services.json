@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "814292261130",
+    "project_id": "imaiges",
+    "storage_bucket": "imaiges.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:814292261130:android:bef71f632802be3b8ac2f3",
+        "android_client_info": {
+          "package_name": "com.example.ai_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "814292261130-0r7upfvh4nqpvns1bgbq6jj30qfakk0n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXlv7A4oMF6ZfxnFOUHGLUBQ5zFJHN6fk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "814292261130-0r7upfvh4nqpvns1bgbq6jj30qfakk0n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
