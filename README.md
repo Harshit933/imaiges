@@ -1,7 +1,7 @@
 ## ai_app
 
-# A social media app built in flutter which allows users to  generate, create and show varitaions of images. 
-It uses gpt3 apis
+# A social media app built in flutter which allows users to  generate, create and show variations of images. 
+# It uses gpt3 apis
 
 # Getting Started
 
