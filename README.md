@@ -1,6 +1,6 @@
 ## imaiges
 
-# A social media app built in flutter which allows users to  generate, create and show variations of images. 
+## A social media app built in flutter which allows users to  generate, create and show variations of images. 
 # It uses gpt3 apis
 
 # Getting Started
