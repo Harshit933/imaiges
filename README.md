@@ -1,8 +1,9 @@
-# ai_app
+## imaiges
 
-A new Flutter project.
+## A social media app built in flutter which allows users to  generate, create and show variations of images. 
+# It uses gpt3 apis
 
-## Getting Started
+# Getting Started
 
 This project is a starting point for a Flutter application.
 
