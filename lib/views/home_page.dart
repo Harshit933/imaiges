@@ -1,9 +1,10 @@
-import 'package:ai_app/views/dir/create_post_page.dart';
+import 'package:ai_app/views/post/create_post_page.dart';
 import 'package:ai_app/views/dir/home_real_page.dart';
 import 'package:ai_app/views/dir/profile_page.dart';
-import 'package:ai_app/views/sign_up.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/auth_provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -15,10 +16,15 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
   final List<dynamic> page = [
-    RealHomePage(),
-    CreatePostPage(),
-    ProfilePage(),
+    const RealHomePage(),
+    const CreatePostPage(),
+    const ProfilePage(),
   ];
 
   void _navigateBottomBar(int index) {
@@ -30,8 +36,16 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.black,
-      body: page[_selectedIndex],
+      body: IndexedStack(
+        children: [
+          const RealHomePage(),
+          const CreatePostPage(),
+          const ProfilePage()
+        ],
+        index: _selectedIndex,
+      ),
       bottomNavigationBar: BottomNavigationBar(
         onTap: _navigateBottomBar,
         backgroundColor: Colors.black,

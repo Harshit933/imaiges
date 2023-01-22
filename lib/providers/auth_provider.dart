@@ -1,21 +1,16 @@
+import 'package:ai_app/firebase%20methods/firestore_methods.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import '../models/usermodel.dart';
 
 class AuthProvider with ChangeNotifier {
-  bool _isAuth = false;
+  UserModel? _user;
+  UserModel get getuser => _user!;
+  final StorageMethods _auth = StorageMethods();
 
-  bool get isAuth => _isAuth;
-
-   check() async {
-    await FirebaseAuth.instance.authStateChanges().listen((User? user) {
-      if (user != null) {
-        _isAuth = true;
-      } else {
-        print('there is no user');
-        _isAuth = false;
-      }
-    });
-    _isAuth = isAuth;
+  Future<void> refreshUser() async {
+    UserModel user = await _auth.getUserDetails();
+    _user = user;
     notifyListeners();
   }
 }

@@ -1,6 +1,6 @@
 import 'package:ai_app/firebase%20methods/auth_methods.dart';
 import 'package:ai_app/routes/app_router_constants.dart';
-import 'package:ai_app/views/sign_up.dart';
+import 'package:ai_app/views/authviews/sign_up.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

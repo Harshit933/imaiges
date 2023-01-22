@@ -1,22 +1,33 @@
 import 'package:ai_app/firebase%20methods/auth_methods.dart';
-import 'package:ai_app/firebase%20methods/firestore_methods.dart';
-import 'package:ai_app/views/home_page.dart';
+import 'package:ai_app/utils/verify_email.dart';
+import 'package:ai_app/views/authviews/log_in.dart';
+import 'package:ai_app/views/authviews/verify_otp.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class UserData extends StatefulWidget {
-  const UserData({Key? key}) : super(key: key);
+import '../../routes/app_router_constants.dart';
+
+class SignUpPage extends StatefulWidget {
+  const SignUpPage({Key? key}) : super(key: key);
 
   @override
-  State<UserData> createState() => _UserDataState();
+  State<SignUpPage> createState() => _SignUpPageState();
 }
 
-/// username, user, profilephoto, bio, followers, following,
-class _UserDataState extends State<UserData> {
-  final _usernamectrl = TextEditingController();
-  final _namectrl = TextEditingController();
-  final _bioctrl = TextEditingController();
+class _SignUpPageState extends State<SignUpPage> {
+  final _emailCtrl = TextEditingController();
+  final _passCtrl = TextEditingController();
+  final _confirmpassCtrl = TextEditingController();
+
+  bool check() {
+    if (_passCtrl.text.trim() == _confirmpassCtrl.text.trim()) {
+      return true;
+    }
+    return false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,12 +42,14 @@ class _UserDataState extends State<UserData> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                'About you',
-                style: TextStyle(
-                  fontFamily: 'grinched',
-                  color: CupertinoColors.white,
-                  fontSize: 70,
+              Container(
+                child: Text(
+                  'Sign Up',
+                  style: TextStyle(
+                    fontSize: 100,
+                    color: Colors.white,
+                    fontFamily: 'grinched',
+                  ),
                 ),
               ),
               SizedBox(
@@ -46,13 +59,13 @@ class _UserDataState extends State<UserData> {
                 width: width * 0.75,
                 height: 60,
                 child: TextFormField(
-                  controller: _usernamectrl,
                   cursorHeight: 15,
                   style: GoogleFonts.poppins(
                     fontWeight: FontWeight.normal,
                     fontSize: 15,
                     color: Colors.white,
                   ),
+                  controller: _emailCtrl,
                   decoration: InputDecoration(
                     suffixIcon: Icon(
                       Icons.remove_red_eye,
@@ -62,7 +75,7 @@ class _UserDataState extends State<UserData> {
                       borderSide: BorderSide(
                           color: CupertinoColors.activeGreen, width: 3),
                     ),
-                    hintText: "Username",
+                    hintText: "Enter your E-mail",
                     hintStyle: GoogleFonts.poppins(
                       fontSize: 12,
                       color: Colors.white,
@@ -81,25 +94,25 @@ class _UserDataState extends State<UserData> {
               ),
               SizedBox(
                 width: width * 0.75,
-                height: 60,
                 child: TextFormField(
-                  controller: _namectrl,
                   cursorHeight: 15,
                   style: GoogleFonts.poppins(
                     fontWeight: FontWeight.normal,
                     fontSize: 15,
                     color: Colors.white,
                   ),
+                  controller: _passCtrl,
+                  obscureText: true,
                   decoration: InputDecoration(
                     suffixIcon: Icon(
                       Icons.remove_red_eye,
                       color: CupertinoColors.white,
                     ),
+                    hintText: "Enter your password",
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
                           color: CupertinoColors.activeGreen, width: 3),
                     ),
-                    hintText: "Name",
                     hintStyle: GoogleFonts.poppins(
                       fontSize: 12,
                       color: Colors.white,
@@ -107,7 +120,6 @@ class _UserDataState extends State<UserData> {
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    // focusedBorder: Colors.green,
                     filled: true,
                     fillColor: Colors.black,
                   ),
@@ -120,7 +132,8 @@ class _UserDataState extends State<UserData> {
                 width: width * 0.75,
                 height: 60,
                 child: TextFormField(
-                  controller: _bioctrl,
+                  obscureText: true,
+                  controller: _confirmpassCtrl,
                   cursorHeight: 15,
                   style: GoogleFonts.poppins(
                     fontWeight: FontWeight.normal,
@@ -136,7 +149,7 @@ class _UserDataState extends State<UserData> {
                       borderSide: BorderSide(
                           color: CupertinoColors.activeGreen, width: 3),
                     ),
-                    hintText: "About yourself",
+                    hintText: "Confirm your password",
                     hintStyle: GoogleFonts.poppins(
                       fontSize: 12,
                       color: Colors.white,
@@ -154,27 +167,38 @@ class _UserDataState extends State<UserData> {
                 height: 16,
               ),
               InkWell(
+                // splashColor: Colors.white,
+                // highlightColor: Colors.white,
                 onTap: () async {
-                  StorageMethods meth = StorageMethods();
-                  String res = await meth.userDetails(
-                    username: _usernamectrl.text.trim(),
-                    name: _namectrl.text.trim(),
-                    About: _bioctrl.text.trim(),
-                  );
-                  if (res != 'success') {
+                  print('hello');
+                  if (check()) {
+                    AuthMethods methods = AuthMethods(
+                      email: _emailCtrl.text.trim(),
+                      password: _passCtrl.text.trim(),
+                    );
+                    await methods.signUp();
+                    // VerifyEmail(Email: _emailCtrl.text.trim()).sendMail();
+
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => VerifyPage(),
+                      ),
+                    );
+                  } else {
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
                           backgroundColor: CupertinoColors.white,
-                          title: Text("Something went wrong"),
+                          title: Text('Check your password again'),
                           titleTextStyle: GoogleFonts.poppins(
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
                             color: Colors.black,
                           ),
                           content: Text(
-                            "Please try again",
+                            "Both the passwords doesn't match",
                           ),
                           actionsPadding: EdgeInsets.only(
                             right: 12,
@@ -195,15 +219,13 @@ class _UserDataState extends State<UserData> {
                       },
                     );
                   }
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => HomePage()));
                 },
                 child: Container(
                   height: height * 0.07,
                   width: width * 0.75,
                   child: Center(
                     child: Text(
-                      'Next',
+                      'Sign Up',
                       style: GoogleFonts.poppins(
                         fontSize: 17,
                         color: Colors.white,
@@ -219,6 +241,36 @@ class _UserDataState extends State<UserData> {
                   ),
                 ),
               ),
+              SizedBox(
+                height: 16,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Not a member? ',
+                    style: GoogleFonts.poppins(
+                      fontSize: 20,
+                      color: Colors.white,
+                    ),
+                  ),
+                  InkWell(
+                    splashColor: Colors.black,
+                    onTap: () {
+                      Navigator.pushReplacement(context,
+                          MaterialPageRoute(builder: (context) => LogInPage()));
+                    },
+                    child: Text(
+                      'Log In ',
+                      style: GoogleFonts.poppins(
+                        fontSize: 20,
+                        color: CupertinoColors.activeGreen,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              )
             ],
           ),
         ),

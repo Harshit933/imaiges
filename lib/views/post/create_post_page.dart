@@ -1,4 +1,6 @@
 import 'package:ai_app/service/image_apis.dart';
+import 'package:ai_app/views/home_page.dart';
+import 'package:ai_app/views/post/view_generated_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -21,6 +23,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
     double width = MediaQuery.of(context).size.width;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: Colors.transparent,
@@ -162,7 +165,12 @@ class _CreatePostPageState extends State<CreatePostPage> {
                     prompt: _promptCtrl.text.trim(),
                     size: _sizeOfImageCtrl.text,
                   );
-                  print(img);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ViewPage(images: img),
+                    ),
+                  );
                 },
                 child: Container(
                   height: height * 0.07,
