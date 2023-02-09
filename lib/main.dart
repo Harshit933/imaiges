@@ -1,4 +1,5 @@
 import 'package:ai_app/providers/auth_provider.dart';
+import 'package:ai_app/providers/post_provider.dart';
 import 'package:provider/provider.dart';
 import 'auth/toggle_home_login.dart';
 import 'package:flutter/material.dart';
@@ -20,8 +21,12 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => AuthProvider(),
         ),
+        ChangeNotifierProvider(
+          create: (context) => PostProvider(),
+        ),
       ],
       child: const MaterialApp(
+        debugShowCheckedModeBanner: false,
         home: Toggle(),
       ),
     );

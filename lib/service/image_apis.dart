@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 
 class Apis {
   static const String key =
-      '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';
+      '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';
   static const String baseUrl = 'api.openai.com';
   static const Map<String, String> header = {
     'Authorization': 'Bearer ${Apis.key}',
@@ -14,12 +14,12 @@ class Apis {
   int n = 1;
 
   /// generate images
-  static Future<List<String>> generateImage({
+  static Future<String> generateImage({
     required String prompt,
     required String size,
     required int NumberOfImages,
   }) async {
-    List<String> images = [];
+    String images = '';
 
     /// have to change prompt in the body to the custom value
     http.Response response = await http.post(
@@ -34,10 +34,11 @@ class Apis {
 
     var t = jsonDecode(response.body);
     print(t);
-
-    for (int i = 0; i < NumberOfImages - 1; i++) {
-      images.add(t['data'][NumberOfImages]['url']);
-    }
+    // images.add(t['data'][0]['url']);
+    images = t['data'][0]['url'];
+    // for (int i = 0; i < NumberOfImages; i++) {
+    //   images.add(t['data'][NumberOfImages]['url']);
+    // }
     // / TO get all the data from
     // images.add(t['data'][0]['url']);
     return images;

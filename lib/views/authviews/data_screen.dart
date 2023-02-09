@@ -1,8 +1,9 @@
-import 'package:ai_app/firebase%20methods/firestore_methods.dart';
 import 'package:ai_app/views/home_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import '../../Backend_methods/firebase_methods.dart';
 
 class UserData extends StatefulWidget {
   const UserData({Key? key}) : super(key: key);

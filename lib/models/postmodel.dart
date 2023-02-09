@@ -3,14 +3,20 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class PostModel {
   String prompt;
   String description;
-  List<String> images;
+  String images;
   String pid;
+  String size;
+  String uid;
+  List<String> likes;
 
   PostModel({
     required this.images,
     required this.prompt,
     required this.description,
     required this.pid,
+    required this.size,
+    required this.uid,
+    required this.likes,
   });
 
   Map<String, dynamic> toJson() => {
@@ -18,6 +24,9 @@ class PostModel {
         'images': images,
         'prompt': prompt,
         'pid': pid,
+        'size': size,
+        'uid': uid,
+        'likes': likes,
       };
 
   static PostModel fromSnap(DocumentSnapshot snapshot) {
@@ -27,6 +36,9 @@ class PostModel {
       description: snap['description'],
       images: snap['images'],
       pid: snap['pid'],
+      size: snap['size'],
+      uid: snap['uid'],
+      likes: snap['likes'],
     );
   }
 }

@@ -1,6 +1,6 @@
-import 'package:ai_app/firebase%20methods/firestore_methods.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import '../Backend_methods/firebase_methods.dart';
 import '../models/usermodel.dart';
 
 class AuthProvider with ChangeNotifier {

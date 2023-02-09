@@ -1,7 +1,10 @@
+import 'package:ai_app/Backend_methods/fire_store_methods.dart';
+import 'package:ai_app/widgets/post_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class RealHomePage extends StatefulWidget {
   const RealHomePage({Key? key}) : super(key: key);
@@ -11,24 +14,6 @@ class RealHomePage extends StatefulWidget {
 }
 
 class _RealHomePageState extends State<RealHomePage> {
-  @override
-  void initState() {
-    // TODO: implement initState
-    user();
-    super.initState();
-  }
-
-  void user() async {
-    final _auth = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .get();
-    print(_auth['name']);
-    print(_auth['usrename']);
-    print(_auth['about']);
-    print(_auth['followers']);
-  }
-
   void logOut() async {
     await FirebaseAuth.instance.signOut();
     await FirebaseAuth.instance.currentUser!.reload();
@@ -37,17 +22,52 @@ class _RealHomePageState extends State<RealHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        centerTitle: true,
+        elevation: 0,
+        title: Text(
+          'Feed',
+        ),
+        titleTextStyle: GoogleFonts.poppins(
+          color: CupertinoColors.activeGreen,
+          fontSize: 20,
+        ),
+      ),
       backgroundColor: Colors.black,
       body: SafeArea(
-        child: Column(
-          children: [
-            Center(
-              child: ElevatedButton(
-                onPressed: () => logOut(),
-                child: Text('Log Out'),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Center(
+                child: ElevatedButton(
+                  onPressed: () => logOut(),
+                  child: Text('Log Out'),
+                ),
               ),
-            )
-          ],
+              StreamBuilder(
+                stream:
+                    FirebaseFirestore.instance.collection('posts').snapshots(),
+                builder: (context,
+                    AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                        snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: snapshot.data!.docs.length,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) => PostWidget(
+                      snap: snapshot.data!.docs[index],
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

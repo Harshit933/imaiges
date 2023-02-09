@@ -6,7 +6,7 @@ class StorageMethods {
   final _auth = FirebaseAuth.instance;
   final _firestore = FirebaseFirestore.instance;
 
-  var _userid = FirebaseAuth.instance.currentUser;
+  final _userid = FirebaseAuth.instance.currentUser;
   List<String> followers = [];
 
   Future<String> userDetails({
@@ -22,6 +22,7 @@ class StorageMethods {
       followers: [],
       following: [],
       uid: _userid!.uid,
+      bookmarks: [],
     );
     try {
       await FirebaseFirestore.instance

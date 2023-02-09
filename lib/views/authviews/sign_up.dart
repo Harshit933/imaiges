@@ -1,4 +1,3 @@
-import 'package:ai_app/firebase%20methods/auth_methods.dart';
 import 'package:ai_app/utils/verify_email.dart';
 import 'package:ai_app/views/authviews/log_in.dart';
 import 'package:ai_app/views/authviews/verify_otp.dart';
@@ -8,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../routes/app_router_constants.dart';
+import '../../Backend_methods/auth_methods.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
@@ -73,7 +72,9 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                          color: CupertinoColors.activeGreen, width: 3),
+                        color: CupertinoColors.activeGreen,
+                        width: 3,
+                      ),
                     ),
                     hintText: "Enter your E-mail",
                     hintStyle: GoogleFonts.poppins(

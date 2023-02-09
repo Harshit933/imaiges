@@ -10,6 +10,7 @@ class UserModel {
   final List<dynamic> followers;
   final List<dynamic> following;
   final String uid;
+  final List<String> bookmarks;
 
   const UserModel({
     required this.name,
@@ -18,6 +19,7 @@ class UserModel {
     required this.followers,
     required this.following,
     required this.uid,
+    required this.bookmarks,
   });
 
   /// Change usrename to username
@@ -29,6 +31,7 @@ class UserModel {
         'followers': followers,
         'following': following,
         'uid': uid,
+        'bookmarks': bookmarks,
       };
 
   static UserModel fromSnap(DocumentSnapshot snap) {
@@ -41,6 +44,7 @@ class UserModel {
       about: snapshot['about'],
       followers: snapshot['followers'],
       following: snapshot['following'],
+      bookmarks: snapshot['bookmarks'],
     );
   }
 }

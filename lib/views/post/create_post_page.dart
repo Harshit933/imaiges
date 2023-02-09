@@ -1,9 +1,15 @@
+import 'package:ai_app/models/postmodel.dart';
+import 'package:ai_app/models/usermodel.dart';
+import 'package:ai_app/providers/post_provider.dart';
 import 'package:ai_app/service/image_apis.dart';
 import 'package:ai_app/views/home_page.dart';
 import 'package:ai_app/views/post/view_generated_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+
+import '../../providers/auth_provider.dart';
 
 class CreatePostPage extends StatefulWidget {
   const CreatePostPage({Key? key}) : super(key: key);
@@ -16,11 +22,14 @@ class _CreatePostPageState extends State<CreatePostPage> {
   TextEditingController _promptCtrl = TextEditingController();
   TextEditingController _numberOfImagesCtrl = TextEditingController();
   TextEditingController _sizeOfImageCtrl = TextEditingController();
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
+    UserModel? _user = Provider.of<AuthProvider>(context).getuser;
+    // PostModel? _model = Provider.of<PostProvider>(context).model;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -156,19 +165,28 @@ class _CreatePostPageState extends State<CreatePostPage> {
               ),
               InkWell(
                 onTap: () async {
-                  print(_sizeOfImageCtrl.text);
-                  print(_numberOfImagesCtrl.text);
-                  print(_promptCtrl.text);
-                  print('Generating');
-                  List<String> img = await Apis.generateImage(
+                  setState(() {
+                    isLoading = true;
+                  });
+
+                  String img = await Apis.generateImage(
                     NumberOfImages: int.parse(_numberOfImagesCtrl.text),
                     prompt: _promptCtrl.text.trim(),
                     size: _sizeOfImageCtrl.text,
                   );
+
+                  setState(() {
+                    isLoading = false;
+                  });
+
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ViewPage(images: img),
+                      builder: (context) => ViewPage(
+                        images: img,
+                        size: _sizeOfImageCtrl.text.trim(),
+                        prompt: _promptCtrl.text.trim(),
+                      ),
                     ),
                   );
                 },
@@ -176,13 +194,17 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   height: height * 0.07,
                   width: width * 0.75,
                   child: Center(
-                    child: Text(
-                      'Generate ',
-                      style: GoogleFonts.poppins(
-                        fontSize: 17,
-                        color: Colors.white,
-                      ),
-                    ),
+                    child: isLoading
+                        ? CircularProgressIndicator(
+                            color: Colors.white,
+                          )
+                        : Text(
+                            'Generate ',
+                            style: GoogleFonts.poppins(
+                              fontSize: 17,
+                              color: Colors.white,
+                            ),
+                          ),
                   ),
                   decoration: BoxDecoration(
                     color: CupertinoColors.activeGreen,

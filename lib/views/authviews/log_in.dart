@@ -1,11 +1,11 @@
-import 'package:ai_app/firebase%20methods/auth_methods.dart';
-import 'package:ai_app/routes/app_router_constants.dart';
 import 'package:ai_app/views/authviews/sign_up.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import '../../Backend_methods/auth_methods.dart';
 
 class LogInPage extends StatefulWidget {
   const LogInPage({Key? key}) : super(key: key);
