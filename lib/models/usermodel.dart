@@ -10,7 +10,7 @@ class UserModel {
   final List<dynamic> followers;
   final List<dynamic> following;
   final String uid;
-  final List<String> bookmarks;
+  final List<dynamic> bookmarks;
 
   const UserModel({
     required this.name,

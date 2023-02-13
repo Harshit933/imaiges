@@ -17,22 +17,35 @@ class _VerifyPageState extends State<VerifyPage> {
 
   @override
   void initState() {
+    sendVerificationMail();
     if (!isEmailVerified) {
       timer = Timer.periodic(
         Duration(seconds: 3),
         (_) => checkEmailVerified(),
       );
     }
-    sendVerificationMail();
     super.initState();
   }
 
   Future sendVerificationMail() async {
-    await FirebaseAuth.instance.currentUser!.sendEmailVerification();
+    String res = 'failed';
+    try {
+      await FirebaseAuth.instance.currentUser!.sendEmailVerification();
+      res = 'success';
+      SnackBar(
+        content: Text('Email has been sent! '),
+      );
+    } catch (e) {
+      SnackBar(
+        content: Text("There's some error sending a email"),
+      );
+      print(e);
+    }
+    print(res);
   }
 
   Future checkEmailVerified() async {
-    await FirebaseAuth.instance.currentUser!.reload();
+    await FirebaseAuth.instance.currentUser?.reload();
     setState(() {
       isEmailVerified = FirebaseAuth.instance.currentUser!.emailVerified;
     });

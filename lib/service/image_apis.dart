@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 
 class Apis {
   static const String key =
-      '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';
+      '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';
   static const String baseUrl = 'api.openai.com';
   static const Map<String, String> header = {
     'Authorization': 'Bearer ${Apis.key}',

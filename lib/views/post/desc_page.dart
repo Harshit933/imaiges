@@ -159,7 +159,7 @@ class _DescriptionPageState extends State<DescriptionPage> {
                     );
                   }
 
-                  downloadImage();
+                  // downloadImage();
                 },
                 child: Container(
                   height: height * 0.07,

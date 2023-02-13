@@ -1,19 +1,17 @@
 import 'dart:io';
 
+import 'package:ai_app/models/usermodel.dart';
+import 'package:ai_app/providers/auth_provider.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart';
-import 'package:image_downloader/image_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:dio/dio.dart';
-import 'package:http/http.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 
-import '../../models/postmodel.dart';
-import '../../providers/post_provider.dart';
 import 'desc_page.dart';
 
 class ViewPage extends StatefulWidget {
@@ -31,8 +29,12 @@ class ViewPage extends StatefulWidget {
   State<ViewPage> createState() => _ViewPageState();
 }
 
+/// Here we have to put a download file from network image function and then have to upload to the cloud.
+
 class _ViewPageState extends State<ViewPage> {
-  void downloadImage() async {
+  late String downLoadUrl = '';
+
+  void downloadImage(String uid) async {
     Directory tempDir = await getTemporaryDirectory();
     String tempPath = tempDir.path;
     var dio = Dio();
@@ -40,9 +42,25 @@ class _ViewPageState extends State<ViewPage> {
       '${widget.images}',
       '$tempPath/images/deer.jpg',
     );
-    print(response.data);
-    print(response.data.runtimeType);
+    // print(response.data);
+    // print(response.data.runtimeType);
     // print(response.)
+
+    // Directory appDocDir = await getApplicationDocumentsDirectory();
+    String filePath = '${tempPath}/images/deer.jpg';
+    File file = File(filePath);
+    final storageRef = FirebaseStorage.instance.ref();
+
+    final postTempId = const Uuid().v4();
+
+    final StorageRef = storageRef.child('posts').child(uid).child(postTempId);
+
+    try {
+      TaskSnapshot task = await StorageRef.putFile(file);
+      downLoadUrl = await task.ref.getDownloadURL();
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
@@ -55,6 +73,7 @@ class _ViewPageState extends State<ViewPage> {
     // PostModel? _model = Provider.of<PostProvider>(context).model;
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
+    UserModel? _user = Provider.of<AuthProvider>(context).getuser;
 
     return Scaffold(
       backgroundColor: CupertinoColors.black,
@@ -81,7 +100,7 @@ class _ViewPageState extends State<ViewPage> {
                 MaterialPageRoute(
                   builder: (context) => DescriptionPage(
                     size: widget.size,
-                    imageurl: widget.images,
+                    imageurl: downLoadUrl,
                     prompt: widget.prompt,
                   ),
                 ),
@@ -108,7 +127,9 @@ class _ViewPageState extends State<ViewPage> {
               ),
             ),
             ElevatedButton(
-              onPressed: downloadImage,
+              onPressed: () {
+                downloadImage(_user.uid);
+              },
               child: Text('Download Image'),
             ),
           ],

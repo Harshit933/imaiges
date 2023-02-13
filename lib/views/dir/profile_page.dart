@@ -15,40 +15,40 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  String imageID = '';
+  // String imageID = '';
   Future<void> addData() async {
     AuthProvider _userprovider = Provider.of(context, listen: false);
     await _userprovider.refreshUser();
   }
 
-  Future downloadImage2() async {
-    try {
-      // Saved with this method.
-      var imageId = await ImageDownloader.downloadImage(
-          "https://www.shutterstock.com/image-photo/surreal-image-african-elephant-wearing-260nw-1365289022.jpg");
-      if (imageId == null) {
-        return;
-      }
-
-      print(imageId);
-
-      // Below is a method of obtaining saved image information.
-      // var fileName = await ImageDownloader.findName(imageId);
-      // var path = await ImageDownloader.findPath(imageId);
-      // var size = await ImageDownloader.findByteSize(imageId);
-      var mimeType = await ImageDownloader.findMimeType(imageId);
-      print(imageId.runtimeType);
-      setState(() {
-        imageID = imageId;
-      });
-    } on PlatformException catch (error) {
-      print(error);
-    }
-  }
+  // Future downloadImage2() async {
+  //   try {
+  //     // Saved with this method.
+  //     var imageId = await ImageDownloader.downloadImage(
+  //         "https://www.shutterstock.com/image-photo/surreal-image-african-elephant-wearing-260nw-1365289022.jpg");
+  //     if (imageId == null) {
+  //       return;
+  //     }
+  //
+  //     print(imageId);
+  //
+  //     // Below is a method of obtaining saved image information.
+  //     // var fileName = await ImageDownloader.findName(imageId);
+  //     // var path = await ImageDownloader.findPath(imageId);
+  //     // var size = await ImageDownloader.findByteSize(imageId);
+  //     var mimeType = await ImageDownloader.findMimeType(imageId);
+  //     print(imageId.runtimeType);
+  //     setState(() {
+  //       imageID = imageId;
+  //     });
+  //   } on PlatformException catch (error) {
+  //     print(error);
+  //   }
+  // }
 
   @override
   void initState() {
-    downloadImage2();
+    // downloadImage2();
     addData();
     super.initState();
   }

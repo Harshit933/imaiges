@@ -22,6 +22,14 @@ class PostWidget extends StatefulWidget {
 class _PostWidgetState extends State<PostWidget> {
   FirestoreMethods _methods = FirestoreMethods();
 
+  bool check(String uid) {
+    if (widget.snap['likes'].contains(uid)) {
+      return true;
+    }
+
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
@@ -76,12 +84,19 @@ class _PostWidgetState extends State<PostWidget> {
               children: [
                 /// Add like function
                 IconButton(
-                  onPressed: () {
-                    _methods.addLikes(
-                        _user.uid, widget.snap['pid'], widget.snap['likes']);
-                  },
-                  icon: Icon(Iconsax.heart),
-                ),
+                    onPressed: () {
+                      _methods.addLikes(
+                          _user.uid, widget.snap['pid'], widget.snap['likes']);
+                    },
+                    icon: check(_user.uid)
+                        ? Icon(
+                            Iconsax.heart,
+                            color: Colors.red,
+                          )
+                        : Icon(
+                            Iconsax.heart,
+                            color: Colors.white,
+                          )),
                 SizedBox(
                   width: 10,
                 ),
@@ -119,7 +134,7 @@ class _PostWidgetState extends State<PostWidget> {
             child: Row(
               children: [
                 Text(
-                  '0 likes',
+                  '${widget.snap['likes'].length} likes',
                   style: GoogleFonts.poppins(
                     color: CupertinoColors.white,
                   ),
