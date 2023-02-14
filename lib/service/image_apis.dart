@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 
 class Apis {
   static const String key =
-      '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';
+      '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';
   static const String baseUrl = 'api.openai.com';
   static const Map<String, String> header = {
     'Authorization': 'Bearer ${Apis.key}',
@@ -32,10 +32,15 @@ class Apis {
       }),
     );
 
-    var t = jsonDecode(response.body);
-    print(t);
+    if (response.statusCode == 200) {
+      var t = jsonDecode(response.body);
+      print(t);
+      images = t['data'][0]['url'];
+    } else {
+      throw 'API error';
+    }
     // images.add(t['data'][0]['url']);
-    images = t['data'][0]['url'];
+
     // for (int i = 0; i < NumberOfImages; i++) {
     //   images.add(t['data'][NumberOfImages]['url']);
     // }

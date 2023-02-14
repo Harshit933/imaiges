@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:ai_app/models/usermodel.dart';
 import 'package:ai_app/providers/auth_provider.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -11,7 +10,6 @@ import 'package:photo_view/photo_view.dart';
 import 'package:dio/dio.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
-
 import 'desc_page.dart';
 
 class ViewPage extends StatefulWidget {
@@ -33,34 +31,46 @@ class ViewPage extends StatefulWidget {
 
 class _ViewPageState extends State<ViewPage> {
   late String downLoadUrl = '';
+  final xd = Uuid().v4();
 
-  void downloadImage(String uid) async {
+  bool isLoading = false;
+
+  /// returns 1 if this cases
+  Future<int> downloadImage(String uid) async {
+    int res = 0;
     Directory tempDir = await getTemporaryDirectory();
     String tempPath = tempDir.path;
     var dio = Dio();
-    final response = await dio.download(
-      '${widget.images}',
-      '$tempPath/images/deer.jpg',
-    );
-    // print(response.data);
-    // print(response.data.runtimeType);
-    // print(response.)
+    try {
+      final response = await dio.download(
+        '${widget.images}',
+        '$tempPath/images/$xd.jpg',
+      );
+      res = res++;
+    } catch (e) {
+      throw e;
+    }
+    return res;
+  }
 
-    // Directory appDocDir = await getApplicationDocumentsDirectory();
-    String filePath = '${tempPath}/images/deer.jpg';
+  /// returns 1 if the image is successfully uploaded to the server.
+  Future<int> uploadImage(String uid) async {
+    int res = 0;
+    Directory tempDir = await getTemporaryDirectory();
+    String tempPath = tempDir.path;
+    String filePath = '${tempPath}/images/$xd.jpg';
     File file = File(filePath);
     final storageRef = FirebaseStorage.instance.ref();
-
     final postTempId = const Uuid().v4();
-
     final StorageRef = storageRef.child('posts').child(uid).child(postTempId);
-
     try {
       TaskSnapshot task = await StorageRef.putFile(file);
       downLoadUrl = await task.ref.getDownloadURL();
+      res++;
     } catch (e) {
-      print(e);
+      throw e;
     }
+    return res;
   }
 
   @override
@@ -96,26 +106,38 @@ class _ViewPageState extends State<ViewPage> {
               ),
             ),
             InkWell(
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => DescriptionPage(
-                    size: widget.size,
-                    imageurl: downLoadUrl,
-                    prompt: widget.prompt,
+              onTap: () async {
+                setState(() {
+                  isLoading = true;
+                });
+                await downloadImage(_user.uid);
+                await uploadImage(_user.uid);
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => DescriptionPage(
+                      size: widget.size,
+                      imageurl: downLoadUrl,
+                      prompt: widget.prompt,
+                    ),
                   ),
-                ),
-              ),
+                );
+                setState(() {
+                  isLoading = false;
+                });
+              },
               child: Container(
                 height: height * 0.09,
                 width: width * 0.75,
                 child: Center(
-                  child: Text(
-                    'Share on profile',
-                    style: GoogleFonts.poppins(
-                      fontSize: 17,
-                      color: Colors.white,
-                    ),
-                  ),
+                  child: isLoading
+                      ? CircularProgressIndicator()
+                      : Text(
+                          'Share on profile',
+                          style: GoogleFonts.poppins(
+                            fontSize: 17,
+                            color: Colors.white,
+                          ),
+                        ),
                 ),
                 decoration: BoxDecoration(
                   color: CupertinoColors.activeGreen,

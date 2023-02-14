@@ -6,7 +6,6 @@ class UserModel {
   final String name;
   final String username;
   final String about;
-  // final String profilePhoto;
   final List<dynamic> followers;
   final List<dynamic> following;
   final String uid;

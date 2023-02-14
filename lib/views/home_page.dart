@@ -3,8 +3,6 @@ import 'package:ai_app/views/dir/home_real_page.dart';
 import 'package:ai_app/views/dir/profile_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../providers/auth_provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);

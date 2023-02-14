@@ -110,25 +110,26 @@ class FirestoreMethods {
 
   Future<String> Addbookmark(String postId, String uid, List bookmarks) async {
     String res = 'try again';
-    if (bookmarks.contains(uid)) {
-      try {
-        await _firebase.collection('users').doc(uid).update({
-          'bookmarks': FieldValue.arrayUnion([postId]),
-        });
-        res = 'success';
-      } catch (e) {
-        print(e);
-      }
-    } else {
-      try {
+
+    // return res;
+    try {
+      // if the user has already liked this post then remove it from his likes
+      if (bookmarks.contains(uid)) {
         await _firebase.collection('users').doc(uid).update({
           'bookmarks': FieldValue.arrayRemove([postId]),
         });
-        res = 'success';
-      } catch (e) {
-        print(e);
+      } else {
+        // else we will like the post
+        await _firebase.collection('users').doc(uid).update({
+          'bookmarks': FieldValue.arrayUnion([postId]),
+        });
       }
+    } catch (e) {
+      print("Some error occured" + "${e}");
     }
+
     return res;
   }
+
+  /// function to check whether the post is already bookmarked or not
 }

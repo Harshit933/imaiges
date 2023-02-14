@@ -1,10 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:ai_app/views/comment_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:photo_view/photo_view.dart';
 import 'package:provider/provider.dart';
 
 import '../Backend_methods/fire_store_methods.dart';
@@ -48,7 +46,7 @@ class _PostWidgetState extends State<PostWidget> {
             child: Row(
               children: [
                 Text(
-                  'username',
+                  _user.username,
                   style: GoogleFonts.poppins(
                     fontSize: 16,
                     color: CupertinoColors.activeGreen,
@@ -105,6 +103,10 @@ class _PostWidgetState extends State<PostWidget> {
                 IconButton(
                   onPressed: () {
                     // _methods.addComments(pId: widget.snap['pid'], commentString: 'hello', );
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => CommentsScreen(
+                              pid: widget.snap['pid'],
+                            )));
                   },
                   icon: Icon(Iconsax.message),
                   color: CupertinoColors.white,
@@ -115,14 +117,14 @@ class _PostWidgetState extends State<PostWidget> {
                 ),
 
                 IconButton(
-                  onPressed: () {
-                    _methods.Addbookmark(
-                        widget.snap['bookmarks'], _user.uid, _user.bookmarks);
-                  },
-                  icon: Icon(Icons.bookmark_add_outlined),
-                  color: CupertinoColors.white,
-                  // size: 30,
-                ),
+                    onPressed: () {
+                      _methods.Addbookmark(
+                          widget.snap['pid'], _user.uid, _user.bookmarks);
+                    },
+                    icon: Icon(Icons.bookmark_add_outlined),
+                    color: CupertinoColors.white
+                    // size: 30,
+                    ),
                 SizedBox(
                   width: 10,
                 ),
