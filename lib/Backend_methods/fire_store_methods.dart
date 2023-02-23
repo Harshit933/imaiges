@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:ai_app/models/postmodel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -29,10 +31,12 @@ class FirestoreMethods {
 
     String res = '';
     try {
-      await FirebaseFirestore.instance
-          .collection('posts')
-          .doc(uuid)
-          .set(model.toJson());
+      await _firebase.collection('posts').doc(uuid).set(model.toJson());
+
+      /// store the postId in the usermodel also
+      await _firebase.collection('users').doc(uid).update({
+        'posts': FieldValue.arrayUnion([pid]),
+      });
 
       res = 'success';
     } catch (e) {
@@ -110,16 +114,12 @@ class FirestoreMethods {
 
   Future<String> Addbookmark(String postId, String uid, List bookmarks) async {
     String res = 'try again';
-
-    // return res;
     try {
-      // if the user has already liked this post then remove it from his likes
-      if (bookmarks.contains(uid)) {
+      if (bookmarks.contains(postId)) {
         await _firebase.collection('users').doc(uid).update({
           'bookmarks': FieldValue.arrayRemove([postId]),
         });
       } else {
-        // else we will like the post
         await _firebase.collection('users').doc(uid).update({
           'bookmarks': FieldValue.arrayUnion([postId]),
         });
@@ -132,4 +132,31 @@ class FirestoreMethods {
   }
 
   /// function to check whether the post is already bookmarked or not
+  bool isBookmarked(String pid, String uid, List bookmarks) {
+    if (bookmarks.contains(pid)) {
+      return true;
+    }
+    return false;
+  }
+
+  bool isLiked(String pid, String uid, List likes) {
+    if (likes.contains(uid)) {
+      return true;
+    }
+    return false;
+  }
+
+  /// When storing the post, make sure to store the postId in the posts section of the user.
+  // Future<String> storePostId(String uid, String pid) async {
+  //   String res = 'failed';
+  //   try {
+  //     await _firebase.collection('users').doc(uid).update({
+  //       'posts': FieldValue.arrayUnion([pid]),
+  //     });
+  //     res = 'success';
+  //   } catch (e) {
+  //     throw e;
+  //   }
+  //   return res;
+  // }
 }

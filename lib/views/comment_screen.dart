@@ -129,17 +129,24 @@ class CommentUI extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.black,
-      child: RichText(
-        text: TextSpan(children: [
-          TextSpan(
-              text: '${snap['username']} ',
-              style: GoogleFonts.poppins(color: CupertinoColors.activeGreen)),
-          TextSpan(
-              text: snap['comment'],
-              style: GoogleFonts.poppins(color: CupertinoColors.white)),
-        ]),
+    return Padding(
+      padding: EdgeInsets.all(10),
+      child: Expanded(
+        child: Container(
+          height: 30,
+          color: Colors.black,
+          child: RichText(
+            text: TextSpan(children: [
+              TextSpan(
+                  text: '${snap['username']} ',
+                  style:
+                      GoogleFonts.poppins(color: CupertinoColors.activeGreen)),
+              TextSpan(
+                  text: snap['comment'],
+                  style: GoogleFonts.poppins(color: CupertinoColors.white)),
+            ]),
+          ),
+        ),
       ),
     );
   }

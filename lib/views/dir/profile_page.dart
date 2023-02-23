@@ -1,5 +1,6 @@
 import 'package:ai_app/models/usermodel.dart';
 import 'package:ai_app/providers/auth_provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -80,6 +81,44 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                             ),
                           ),
+                        ),
+                        Divider(
+                          color: CupertinoColors.activeGreen,
+                        ),
+                        StreamBuilder(
+                          stream: FirebaseFirestore.instance
+                              .collection('users')
+                              .snapshots(),
+                          builder: (context,
+                              AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                                  snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return CircularProgressIndicator();
+                            }
+                            return Expanded(
+                              child: GridView.builder(
+                                padding: EdgeInsets.all(10),
+                                itemCount: snapshot.data!.docs.length,
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 3,
+                                  crossAxisSpacing: 4.0,
+                                  mainAxisSpacing: 4.0,
+                                ),
+                                itemBuilder: (BuildContext context, int index) {
+                                  return Expanded(
+                                    child: Container(
+                                      child: Image.network(
+                                        snapshot[''],
+                                        fit: BoxFit.fitWidth,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            );
+                          },
                         ),
                       ],
                     ),

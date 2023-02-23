@@ -139,7 +139,7 @@ class _DescriptionPageState extends State<DescriptionPage> {
                     uid: _user.uid,
                   );
 
-                  final pid = Uuid().v1();
+                  // final pid = Uuid().v1();
 
                   // _model.pid = pid;
                   // _model.description = _descriptionController.text.trim();

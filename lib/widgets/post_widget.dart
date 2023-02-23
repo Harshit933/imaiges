@@ -1,4 +1,5 @@
 import 'package:ai_app/views/comment_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -18,6 +19,7 @@ class PostWidget extends StatefulWidget {
 }
 
 class _PostWidgetState extends State<PostWidget> {
+  // bool isBookmarked;
   FirestoreMethods _methods = FirestoreMethods();
 
   bool check(String uid) {
@@ -28,12 +30,50 @@ class _PostWidgetState extends State<PostWidget> {
     return false;
   }
 
+  Future<String> getUsername() async {
+    var snapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.snap['uid'])
+        .get();
+    DocumentSnapshot data = snapshot.data as DocumentSnapshot;
+
+    return data['usrename'];
+    // return FutureBuilder(
+    //   future: FirebaseFirestore.instance
+    //       .collection('users')
+    //       .doc(widget.snap['uid'])
+    //       .get(),
+    //   builder: ((context, snapshot) {
+    //     if (snapshot.connectionState == ConnectionState.waiting) {
+    //       return CircularProgressIndicator();
+    //     } else {
+    //
+    //       return Text(
+    //         data['usrename'],
+    //         style: TextStyle(
+    //             fontSize: 20,
+    //             color: CupertinoColors.activeGreen,
+    //             fontWeight: FontWeight.bold),
+    //       );
+    //     }
+    //   }),
+    // );
+  }
+
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
 
     UserModel? _user = Provider.of<AuthProvider>(context).getuser;
+
+    // bool check2(String pid) {
+    //   if (_user.bookmarks.contains(pid)) {
+    //     return true;
+    //   }
+    //
+    //   return false;
+    // }
 
     return Container(
       // padding: EdgeInsets.only(le),
@@ -45,13 +85,26 @@ class _PostWidgetState extends State<PostWidget> {
             padding: EdgeInsets.only(left: 8),
             child: Row(
               children: [
-                Text(
-                  _user.username,
-                  style: GoogleFonts.poppins(
-                    fontSize: 16,
-                    color: CupertinoColors.activeGreen,
-                    fontWeight: FontWeight.bold,
-                  ),
+                FutureBuilder(
+                  future: FirebaseFirestore.instance
+                      .collection('users')
+                      .doc(widget.snap['uid'])
+                      .get(),
+                  builder: ((context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    } else {
+                      DocumentSnapshot data =
+                          snapshot.data! as DocumentSnapshot;
+                      return Text(
+                        data['usrename'],
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: CupertinoColors.activeGreen,
+                            fontWeight: FontWeight.bold),
+                      );
+                    }
+                  }),
                 ),
               ],
             ),
@@ -116,15 +169,20 @@ class _PostWidgetState extends State<PostWidget> {
                   width: 10,
                 ),
 
-                IconButton(
-                    onPressed: () {
-                      _methods.Addbookmark(
-                          widget.snap['pid'], _user.uid, _user.bookmarks);
-                    },
-                    icon: Icon(Icons.bookmark_add_outlined),
-                    color: CupertinoColors.white
-                    // size: 30,
-                    ),
+                // IconButton(
+                //   onPressed: () {
+                //     _methods.Addbookmark(
+                //         widget.snap['pid'], _user.uid, _user.bookmarks);
+                //   },
+                //   icon: check2(widget.snap['pid'])
+                //       ? Icon(
+                //           Iconsax.bookmark,
+                //           color: Colors.white,
+                //         )
+                //       : Icon(Iconsax.bookmark,
+                //           color: CupertinoColors.activeGreen),
+                //   // size: 30,
+                // ),
                 SizedBox(
                   width: 10,
                 ),
@@ -151,7 +209,7 @@ class _PostWidgetState extends State<PostWidget> {
                 Flexible(
                   child: RichText(
                     text: TextSpan(
-                      text: '${_user.username} ',
+                      text: "this needs to be fixed ",
                       style: GoogleFonts.poppins(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
@@ -164,8 +222,6 @@ class _PostWidgetState extends State<PostWidget> {
                             fontSize: 14,
                             fontWeight: FontWeight.normal,
                             color: CupertinoColors.white,
-
-                            /// Should be changes to white
                           ),
                         )
                       ],

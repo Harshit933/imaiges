@@ -22,7 +22,8 @@ class StorageMethods {
       followers: [],
       following: [],
       uid: _userid!.uid,
-      bookmarks: [],
+      posts: [],
+      // bookmarks: [],
     );
     try {
       await FirebaseFirestore.instance
